@@ -18,7 +18,7 @@ CHC_menu.init = function()
 end
 
 CHC_menu.applyMigrations = function()
-    --region configs from .json to .lua
+    --region configs from .json to .cfg
     CHC_settings.migrateConfig()
     --endregion
 
