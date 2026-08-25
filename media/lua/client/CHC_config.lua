@@ -83,7 +83,8 @@ local init_cfg = {
     favorites = {
         items = { sep_x = 500, filter_asc = true, filter_type = 'all' },
         recipes = { sep_x = 500, filter_asc = true, filter_type = 'all' }
-    }
+    },
+    migrated = true
 }
 
 local init_mappings = {
@@ -366,21 +367,34 @@ CHC_settings.Load = function()
 end
 
 CHC_settings.migrateConfig = function()
+    --Check if the config already has migrated
+    local cfgStatus, cfg = pcall(utils.tableutil.load, config_name)
+    if cfgStatus and cfg and cfg.migrated then return end
+
     local oldName = "craft_helper_config.json"
+    local oldName2 = "craft_helper_config.lua"
+    local defaultStr = "Safe to remove"
+
     local oldCfgr = getFileReader(oldName, false)
     if not oldCfgr then return end
     oldCfgr:close()
     local status, oldConfig = pcall(utils.jsonutil.Load, oldName)
-    if not status then return end
-    --Do not change the old file, as it cannot be overwritten
-    --local defaultStr = "Safe to remove"
-    --utils.jsonutil.Save(oldName, { defaultStr })
-    if not oldConfig or
-        utils.empty(oldConfig) or
-        oldConfig[1] == defaultStr then
-        return
+    local status2, oldConfig2 = pcall(utils.tableutil.load, oldName2)
+    
+    if not status and not status2 then return end
+
+    if status then
+        --Check if the file is empty or was already copied
+        if not oldConfig or utils.empty(oldConfig) or oldConfig[1] == defaultStr then return end
+        oldConfig.migrated = true
+        utils.tableutil.save(config_name, oldConfig)
     end
-    utils.tableutil.save(config_name, oldConfig)
+    if status2 then
+        --Check if the file is empty or was already copied
+        if not oldConfig2 or utils.empty(oldConfig2) then return end
+        oldConfig2.migrated = true
+        utils.tableutil.save(config_name, oldConfig2)
+    end
 end
 
 CHC_settings.checkConfig = function(config)

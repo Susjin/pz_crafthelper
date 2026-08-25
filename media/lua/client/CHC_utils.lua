@@ -432,7 +432,7 @@ end
 
 ---comment
 ---@param fname string Filename to save data to
----@param data table Data to save
+---@param data table|boolean|string Data to save
 CHC_utils.tableutil.save = function(fname, data)
     if not data then return end
     local fileWriterObj = getFileWriter(fname, true, false)
