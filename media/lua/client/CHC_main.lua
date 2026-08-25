@@ -31,7 +31,7 @@ local cnt = 0
 
 CheckMyModTable = CheckMyModTable or {} -- Mod Checker
 CheckMyModTable[CHC_main._meta.id] = CHC_main._meta.workshopId
-local cacheFileName = 'CraftHelperLuaCache.cfg'
+local cacheFileName = 'CraftHelperLuaCache.txt'
 local loadLua = true
 
 local showTime = function(start, st)
