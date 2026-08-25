@@ -372,8 +372,9 @@ CHC_settings.migrateConfig = function()
     oldCfgr:close()
     local status, oldConfig = pcall(utils.jsonutil.Load, oldName)
     if not status then return end
-    local defaultStr = "Safe to remove"
-    utils.jsonutil.Save(oldName, { defaultStr })
+    --Do not change the old file, as it cannot be overwritten
+    --local defaultStr = "Safe to remove"
+    --utils.jsonutil.Save(oldName, { defaultStr })
     if not oldConfig or
         utils.empty(oldConfig) or
         oldConfig[1] == defaultStr then
