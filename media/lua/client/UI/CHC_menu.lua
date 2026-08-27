@@ -19,7 +19,9 @@ end
 
 CHC_menu.applyMigrations = function()
     --region configs from .json to .cfg
-    CHC_settings.migrateConfig()
+    --Disabled migration of config files because of the last security update for b41
+    --Now the mod uses .json files for configs again
+    --CHC_settings.migrateConfig()
     --endregion
 
     --region migrateItemFavorites

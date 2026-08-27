@@ -348,7 +348,7 @@ end
 
 CHC_settings.Save = function(config)
     config = config or CHC_settings.config
-    local status = pcall(utils.tableutil.save, config_name, config)
+    local status = pcall(utils.jsonutil.Save, config_name, config)
     if not status then
         -- config is corrupted, create new
         CHC_settings.Save(init_cfg)
@@ -356,7 +356,7 @@ CHC_settings.Save = function(config)
 end
 
 CHC_settings.Load = function()
-    local status, config = pcall(utils.tableutil.load, config_name)
+    local status, config = pcall(utils.jsonutil.Load, config_name)
     if not status or not config then
         config = copyTable(init_cfg)
         CHC_settings.Save(config)
@@ -366,6 +366,7 @@ CHC_settings.Load = function()
     CHC_settings.config = config
 end
 
+--This function is not deprecated because of the last b41 update.
 CHC_settings.migrateConfig = function()
     --Check if the config already has migrated
     local cfgStatus, cfg = pcall(utils.tableutil.load, config_name)
@@ -434,7 +435,7 @@ end
 
 CHC_settings.SavePropsData = function(config)
     config = config or CHC_settings.mappings
-    local status = pcall(utils.tableutil.save, mappings_name, config)
+    local status = pcall(utils.jsonutil.Save, mappings_name, config)
     if not status then
         -- config is corrupted, create new
         CHC_settings.SavePropsData(init_mappings)
@@ -442,7 +443,7 @@ CHC_settings.SavePropsData = function(config)
 end
 
 CHC_settings.LoadPropsData = function()
-    local status, config = pcall(utils.tableutil.load, mappings_name)
+    local status, config = pcall(utils.jsonutil.Load, mappings_name)
     if not status or not config then
         config = init_mappings
         CHC_settings.SavePropsData(config)
@@ -479,12 +480,12 @@ CHC_settings.SavePresetsData = function(storageKey, filename, backup_filename)
         end
     end
 
-    local status = pcall(utils.tableutil.save, filename, config)
+    local status = pcall(utils.jsonutil.Save, filename, config)
     if not status then
         -- config is corrupted, create new
-        utils.tableutil.save(filename, init_presets)
+        utils.jsonutil.Save(filename, init_presets)
     else
-        utils.tableutil.save(backup_filename, config)
+        utils.jsonutil.Save(backup_filename, config)
     end
 end
 
@@ -496,7 +497,7 @@ CHC_settings.LoadPresetsData = function(storageKey, filename)
     if not storageKey then
         error("Could not determine filename to load presets from!")
     end
-    local status, config = pcall(utils.tableutil.load, filename)
+    local status, config = pcall(utils.jsonutil.Load, filename)
     if not status or not config then
         config = copyTable(init_presets)
     end
