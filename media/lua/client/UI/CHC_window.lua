@@ -1623,6 +1623,8 @@ function CHC_window.presets:onMoreBtnDuplicateClick()
     CHC_presets.addModal(self, params)
 end
 
+local JsonUtil = require('CHC_json')
+
 function CHC_window.presets:onMoreBtnShareClick()
     local selectedPreset = self:getSelectedPreset()
     if not selectedPreset then return end
@@ -1634,7 +1636,9 @@ function CHC_window.presets:onMoreBtnShareClick()
         entries = entries,
         type = ui_type,
     }
-    local to_share_str = utils.tableutil.serialize(to_share)
+    --Reverted to .json because 'loadstring()' is disabled in 41.78.21
+    --local to_share_str = utils.tableutil.serialize(to_share)
+    local to_share_str = JsonUtil.Encode(to_share)
 
     local function copy(_, button)
         if button.internal ~= "CANCEL" then return end
@@ -1708,12 +1712,13 @@ function CHC_window.presets:onMoreBtnImportClick()
 
     local function validate(text)
         local result = { errors = {}, preset = {} }
-        local fn, _err = loadstring("return " .. tostring(text))
-        if not fn then
-            result.errors[#result.errors + 1] = getText("UI_Presets_Errors_InvalidFormat") .. format(" (%s)", _err)
-            return result
-        end
-        local status, preset = pcall(fn)
+        --Reverted to .json because 'loadstring()' is disabled in 41.78.21
+        --local fn, _err = loadstring("return " .. tostring(text))
+        --if not fn then
+        --    result.errors[#result.errors + 1] = getText("UI_Presets_Errors_InvalidFormat") .. format(" (%s)", _err)
+        --    return result
+        --end
+        local status, preset = pcall(JsonUtil.Decode, tostring(text))
         if not status or not preset then
             result.errors[#result.errors + 1] = getText("UI_Presets_Errors_InvalidFormat")
             preset = {}
